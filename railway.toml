@@ -1,7 +1,10 @@
 [build]
 builder = "nixpacks"
+# Install devDependencies (vite, typescript) — required for npm run build
+buildCommand = "npm install --include=dev && npm run build"
 
 [deploy]
-startCommand = "npm run start"
+# dist is built in the build phase; only start the API + static server
+startCommand = "npm run start:server"
 healthcheckPath = "/api/health"
 restartPolicyType = "on_failure"
