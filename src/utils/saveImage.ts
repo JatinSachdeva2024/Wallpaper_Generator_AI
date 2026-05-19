@@ -1,5 +1,13 @@
+import { API_BASE } from '../config'
+
 function resolveUrl(url: string): string {
   if (url.startsWith('http') || url.startsWith('blob:')) return url
+  if (url.startsWith('/api/')) {
+    const apiOrigin = API_BASE.startsWith('http')
+      ? new URL(API_BASE).origin
+      : window.location.origin
+    return `${apiOrigin}${url}`
+  }
   return `${window.location.origin}${url}`
 }
 

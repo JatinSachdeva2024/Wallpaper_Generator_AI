@@ -25,7 +25,14 @@ const app = express()
 const PORT = Number(process.env.PORT ?? 3001)
 const isProd = process.env.NODE_ENV === 'production'
 
-app.use(cors())
+const corsOrigins = process.env.CORS_ORIGIN?.split(',').map((s) => s.trim())
+app.use(
+  cors(
+    corsOrigins?.length
+      ? { origin: corsOrigins, credentials: true }
+      : undefined,
+  ),
+)
 app.use(express.json())
 
 app.get('/api/health', (_req, res) => {

@@ -27,7 +27,9 @@ export function NewPage() {
       setSections(data)
     } catch {
       setError(
-        'Could not reach the API. Stop vite-only mode and run: npm run dev',
+        import.meta.env.PROD
+          ? 'Could not reach the API. Set VITE_API_URL on Vercel to your hosted backend.'
+          : 'Could not reach the API. Run npm run dev (starts API + frontend).',
       )
     } finally {
       setLoading(false)

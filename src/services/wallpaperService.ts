@@ -1,9 +1,8 @@
+import { API_BASE } from '../config'
 import type { CategoryId, Wallpaper } from '../types/wallpaper'
 
-const API = '/api'
-
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API}${path}`, init)
+  const res = await fetch(`${API_BASE}${path}`, init)
   const body = await res.json().catch(() => ({}))
   if (!res.ok && res.status !== 202) {
     const errBody = body as { message?: string; error?: string }
