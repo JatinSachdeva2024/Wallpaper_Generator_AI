@@ -1,9 +1,8 @@
 import Database from 'better-sqlite3'
 import path from 'node:path'
 import fs from 'node:fs'
+import { getDataDir } from './dataPaths.js'
 import type { CategoryId, Wallpaper, WallpaperRow } from './types.js'
-
-const DATA_DIR = path.resolve(process.cwd(), 'data')
 
 function resolveSqlitePath(): string {
   if (process.env.SQLITE_PATH) {
@@ -13,7 +12,7 @@ function resolveSqlitePath(): string {
   if (raw.endsWith('.db')) {
     return path.resolve(raw)
   }
-  return path.join(DATA_DIR, 'wallpapers.db')
+  return path.join(getDataDir(), 'wallpapers.db')
 }
 
 const DB_PATH = resolveSqlitePath()
@@ -68,10 +67,7 @@ function initSchema() {
 }
 
 function resolveImageUrl(row: WallpaperRow): string {
-  if (row.image_local_path) {
-    return `/api/images/${row.image_local_path}`
-  }
-  return row.image_url
+  return `/api/wallpapers/${row.id}/image`
 }
 
 function rowToWallpaper(row: WallpaperRow): Wallpaper {
@@ -134,10 +130,15 @@ export function getWallpapersByCategory(
   return rows.map(rowToWallpaper)
 }
 
-export function getWallpaperById(id: string): Wallpaper | null {
+export function getWallpaperRowById(id: string): WallpaperRow | null {
   const row = getDb()
     .prepare('SELECT * FROM wallpapers WHERE id = ?')
     .get(id) as WallpaperRow | undefined
+  return row ?? null
+}
+
+export function getWallpaperById(id: string): Wallpaper | null {
+  const row = getWallpaperRowById(id)
   return row ? rowToWallpaper(row) : null
 }
 

@@ -12,6 +12,7 @@ import {
 } from './db.js'
 import { generateCategoryWallpapers } from './generator.js'
 import { getImagesDir } from './imageStore.js'
+import { serveWallpaperImage } from './imageServe.js'
 import { getGenerationStatus } from './generationState.js'
 import {
   getSchedulerStatus,
@@ -56,6 +57,10 @@ app.get('/api/wallpapers', (req, res) => {
     ? getWallpapersByCategory(category)
     : getAllTodaysWallpapers()
   res.json(wallpapers)
+})
+
+app.get('/api/wallpapers/:id/image', (req, res) => {
+  void serveWallpaperImage(req, res)
 })
 
 app.get('/api/wallpapers/:id', (req, res) => {

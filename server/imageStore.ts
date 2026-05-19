@@ -1,10 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
-
-const IMAGES_DIR = path.resolve(process.cwd(), 'data', 'images')
+import { getImagesDir } from './dataPaths.js'
 
 export function ensureImagesDir() {
-  fs.mkdirSync(IMAGES_DIR, { recursive: true })
+  fs.mkdirSync(getImagesDir(), { recursive: true })
 }
 
 /** Download Pollinations image and save locally. Returns filename. */
@@ -14,7 +13,7 @@ export async function downloadAndSaveImage(
 ): Promise<string> {
   ensureImagesDir()
   const filename = `${id}.jpg`
-  const filePath = path.join(IMAGES_DIR, filename)
+  const filePath = path.join(getImagesDir(), filename)
 
   const maxRetries = Number(process.env.POLLINATIONS_RETRIES ?? 2)
   let lastError: Error | null = null
@@ -54,6 +53,4 @@ export async function downloadAndSaveImage(
   throw lastError ?? new Error(`Download failed for ${id}`)
 }
 
-export function getImagesDir() {
-  return IMAGES_DIR
-}
+export { getImagesDir } from './dataPaths.js'
