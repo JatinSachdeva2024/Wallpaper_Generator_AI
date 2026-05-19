@@ -1,0 +1,36 @@
+name: Daily wallpaper generation
+
+on:
+  schedule:
+    # Midnight UTC — adjust for your timezone
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: npm ci
+
+      - name: Generate wallpapers
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ secrets.OPENROUTER_MODEL }}
+          POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+          POLLINATIONS_MODEL: flux
+          POLLINATIONS_DELAY_MS: 3000
+        run: npm run cron:generate
+
+      # Optional: upload DB + images as artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wallpapers-${{ github.run_id }}
+          path: |
+            data/wallpapers.db
+            data/images/
