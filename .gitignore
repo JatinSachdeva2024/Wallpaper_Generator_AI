@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 dist-server
-data
+/data
 !data/.gitkeep
 .env
 test-wallpaper*.jpg

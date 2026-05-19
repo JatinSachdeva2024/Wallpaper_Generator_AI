@@ -9,7 +9,10 @@ import type { CategoryId, Wallpaper } from '../types/wallpaper'
 export function CategoryPage() {
   const { refreshKey } = useGeneration()
   const { categoryId } = useParams<{ categoryId: string }>()
-  const category = categoryId ? CATEGORY_MAP[categoryId] : undefined
+  const category =
+    categoryId && categoryId in CATEGORY_MAP
+      ? CATEGORY_MAP[categoryId as CategoryId]
+      : undefined
   const [wallpapers, setWallpapers] = useState<Wallpaper[]>([])
   const [loading, setLoading] = useState(true)
 
